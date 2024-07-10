@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 1
+names: ['sunflower']
+
+roboflow:
+  workspace: sunflower-d7itf
+  project: sunflower-3
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/sunflower-d7itf/sunflower-3/dataset/1
