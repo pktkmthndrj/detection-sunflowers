@@ -1,0 +1,442 @@
+Шаг 1: Экспорт датасета в Colab.
+Программа:
+!mkdir {HOME}/datasets
+%cd {HOME}/datasets
+
+!pip install roboflow –quiet
+
+from roboflow import Roboflow
+rf = Roboflow(api_key=”hberJ7rsObMCb07hKL9x”)
+project = rf.workspace(“sunflower-d7itf”).project(“sunflower-3”)
+dataset = project.version(1).download(“yolov8”)
+
+Вывод программы:
+/content/datasets
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76.2/76.2 kB 3.0 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 178.7/178.7 kB 13.5 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 54.5/54.5 kB 8.3 MB/s eta 0:00:00
+loading Roboflow workspace…
+loading Roboflow project…
+Downloading Dataset Version Zip in sunflower-3-1 to yolov8:: 100%|██████████| 115263/115263 [00:07<00:00, 15649.63it/s]
+Extracting Dataset Version Zip to sunflower-3-1 in yolov8:: 100%|██████████| 3442/3442 [00:00<00:00, 3651.95it/s]
+
+
+
+Шаг 2: Обучение.
+Программа: 
+%cd {HOME}
+
+!yolo task=detect mode=train model=yolov8n.pt data={dataset.location}/data.yaml epochs=25 imgsz=800 plots=True
+
+Вывод программы:
+/content
+Downloading https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8n.pt to ‘yolov8n.pt’…
+100% 6.23M/6.23M [00:00<00:00, 305MB/s]
+New https://pypi.org/project/ultralytics/8.2.51 available 😃 Update with ‘pip install –U ultralytics’
+Ultralytics YOLOv8.0.196 🚀 Python-3.10.12 torch-2.3.0+cu121 CUDA:0 (Tesla T4, 15102MiB)
+engine/trainer: task=detect, mode=train, model=yolov8n.pt, data=/content/datasets/sunflower-3-1/data.yaml, epochs=25, patience=50, batch=16, imgsz=800, save=True, save_period=-1, cache=False, device=None, workers=8, project=None, name=None, exist_ok=False, pretrained=True, optimizer=auto, verbose=True, seed=0, deterministic=True, single_cls=False, rect=False, cos_lr=False, close_mosaic=10, resume=False, amp=True, fraction=1.0, profile=False, freeze=None, overlap_mask=True, mask_ratio=4, dropout=0.0, val=True, split=val, save_json=False, save_hybrid=False, conf=None, iou=0.7, max_det=300, half=False, dnn=False, plots=True, source=None, show=False, save_txt=False, save_conf=False, save_crop=False, show_labels=True, show_conf=True, vid_stride=1, stream_buffer=False, line_width=None, visualize=False, augment=False, agnostic_nms=False, classes=None, retina_masks=False, boxes=True, format=torchscript, keras=False, optimize=False, int8=False, dynamic=False, simplify=False, opset=None, workspace=4, nms=False, lr0=0.01, lrf=0.01, momentum=0.937, weight_decay=0.0005, warmup_epochs=3.0, warmup_momentum=0.8, warmup_bias_lr=0.1, box=7.5, cls=0.5, dfl=1.5, pose=12.0, kobj=1.0, label_smoothing=0.0, nbs=64, hsv_h=0.015, hsv_s=0.7, hsv_v=0.4, degrees=0.0, translate=0.1, scale=0.5, shear=0.0, perspective=0.0, flipud=0.0, fliplr=0.5, mosaic=1.0, mixup=0.0, copy_paste=0.0, cfg=None, tracker=botsort.yaml, save_dir=runs/detect/train
+Downloading https://ultralytics.com/assets/Arial.ttf to ‘/root/.config/Ultralytics/Arial.ttf’…
+100% 755k/755k [00:00<00:00, 75.3MB/s]
+2024-07-08 21:10:15.675059: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2024-07-08 21:10:15.675130: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-07-08 21:10:15.690107: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+Overriding model.yaml nc=80 with nc=1
+
+                   from  n    params  module                                       arguments                     
+  0                  -1  1       464  ultralytics.nn.modules.conv.Conv             [3, 16, 3, 2]                 
+  1                  -1  1      4672  ultralytics.nn.modules.conv.Conv             [16, 32, 3, 2]                
+  2                  -1  1      7360  ultralytics.nn.modules.block.C2f             [32, 32, 1, True]             
+  3                  -1  1     18560  ultralytics.nn.modules.conv.Conv             [32, 64, 3, 2]                
+  4                  -1  2     49664  ultralytics.nn.modules.block.C2f             [64, 64, 2, True]             
+  5                  -1  1     73984  ultralytics.nn.modules.conv.Conv             [64, 128, 3, 2]               
+  6                  -1  2    197632  ultralytics.nn.modules.block.C2f             [128, 128, 2, True]           
+  7                  -1  1    295424  ultralytics.nn.modules.conv.Conv             [128, 256, 3, 2]              
+  8                  -1  1    460288  ultralytics.nn.modules.block.C2f             [256, 256, 1, True]           
+  9                  -1  1    164608  ultralytics.nn.modules.block.SPPF            [256, 256, 5]                 
+ 10                  -1  1         0  torch.nn.modules.upsampling.Upsample         [None, 2, ‘nearest’]          
+ 11             [-1, 6]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           
+ 12                  -1  1    148224  ultralytics.nn.modules.block.C2f             [384, 128, 1]                 
+ 13                  -1  1         0  torch.nn.modules.upsampling.Upsample         [None, 2, ‘nearest’]          
+ 14             [-1, 4]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           
+ 15                  -1  1     37248  ultralytics.nn.modules.block.C2f             [192, 64, 1]                  
+ 16                  -1  1     36992  ultralytics.nn.modules.conv.Conv             [64, 64, 3, 2]                
+ 17            [-1, 12]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           
+ 18                  -1  1    123648  ultralytics.nn.modules.block.C2f             [192, 128, 1]                 
+ 19                  -1  1    147712  ultralytics.nn.modules.conv.Conv             [128, 128, 3, 2]              
+ 20             [-1, 9]  1         0  ultralytics.nn.modules.conv.Concat           [1]                           
+ 21                  -1  1    493056  ultralytics.nn.modules.block.C2f             [384, 256, 1]                 
+ 22        [15, 18, 21]  1    751507  ultralytics.nn.modules.head.Detect           [1, [64, 128, 256]]           
+Model summary: 225 layers, 3011043 parameters, 3011027 gradients, 8.2 GFLOPs
+
+Transferred 319/355 items from pretrained weights
+TensorBoard: Start with ‘tensorboard –logdir runs/detect/train’, view at http://localhost:6006/
+Freezing layer ‘model.22.dfl.conv.weight’
+AMP: running Automatic Mixed Precision (AMP) checks with YOLOv8n…
+/usr/local/lib/python3.10/dist-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at ../aten/src/Aten/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+WARNING ⚠️ NMS time limit 0.550s exceeded
+AMP: checks passed ✅
+train: Scanning /content/datasets/sunflower-3-1/train/labels… 1366 images, 124 backgrounds, 0 corrupt: 100% 1366/1366 [00:00<00:00, 2139.64it/s]
+train: New cache created: /content/datasets/sunflower-3-1/train/labels.cache
+albumentations: Blur(p=0.01, blur_limit=(3, 7)), MedianBlur(p=0.01, blur_limit=(3, 7)), ToGray(p=0.01), CLAHE(p=0.01, clip_limit=(1, 4.0), tile_grid_size=(8, 8))
+/usr/lib/python3.10/multiprocessing/popen_fork.py:66: RuntimeWarning: os.fork() was called. Os.fork() is incompatible with multithreaded code, and JAX is multithreaded, so this will likely lead to a deadlock.
+  Self.pid = os.fork()
+val: Scanning /content/datasets/sunflower-3-1/valid/labels… 229 images, 14 backgrounds, 0 corrupt: 100% 229/229 [00:00<00:00, 1543.63it/s]
+val: New cache created: /content/datasets/sunflower-3-1/valid/labels.cache
+Plotting labels to runs/detect/train/labels.jpg… 
+optimizer: ‘optimizer=auto’ found, ignoring ‘lr0=0.01’ and ‘momentum=0.937’ and determining best ‘optimizer’, ‘lr0’ and ‘momentum’ automatically… 
+optimizer: AdamW(lr=0.002, momentum=0.9) with parameter groups 57 weight(decay=0.0), 64 weight(decay=0.0005), 63 bias(decay=0.0)
+Image sizes 800 train, 800 val
+Using 2 dataloader workers
+Logging results to runs/detect/train
+Starting training for 25 epochs…
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+       1/25      4.12G      1.747       1.97      1.652        136        800: 100% 86/86 [00:51<00:00,  1.66it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:06<00:00,  1.15it/s]
+                   all        229       1202      0.565      0.455      0.527       0.25
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+       2/25      4.71G      1.699      1.492      1.562         42        800: 100% 86/86 [00:46<00:00,  1.85it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:07<00:00,  1.10it/s]
+                   all        229       1202      0.634      0.651      0.655      0.302
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+       3/25      4.23G      1.683      1.394      1.584         43        800: 100% 86/86 [00:44<00:00,  1.95it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:04<00:00,  1.84it/s]
+                   all        229       1202       0.76      0.681      0.763      0.344
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+       4/25      5.45G       1.69      1.316      1.568        110        800: 100% 86/86 [00:46<00:00,  1.84it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:03<00:00,  2.13it/s]
+                   all        229       1202      0.695      0.681      0.719      0.324
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+       5/25       4.4G      1.715      1.287      1.569         26        800: 100% 86/86 [00:48<00:00,  1.76it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:03<00:00,  2.18it/s]
+                   all        229       1202      0.766       0.72      0.785      0.364
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+       6/25      4.49G      1.657      1.207      1.528         38        800: 100% 86/86 [00:45<00:00,  1.91it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:07<00:00,  1.11it/s]
+                   all        229       1202      0.751      0.695      0.773      0.363
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+       7/25      4.63G      1.623      1.157      1.521         48        800: 100% 86/86 [00:44<00:00,  1.94it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:04<00:00,  1.84it/s]
+                   all        229       1202      0.744      0.697      0.763      0.349
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+       8/25      4.46G      1.643      1.159      1.518         89        800: 100% 86/86 [00:48<00:00,  1.77it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:03<00:00,  2.15it/s]
+                   all        229       1202      0.742      0.755      0.811      0.406
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+       9/25      5.06G      1.583      1.096      1.499         50        800: 100% 86/86 [00:46<00:00,  1.85it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:05<00:00,  1.40it/s]
+                   all        229       1202      0.747      0.733      0.779       0.39
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      10/25       4.6G      1.576       1.09      1.486         35        800: 100% 86/86 [00:44<00:00,  1.91it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:05<00:00,  1.54it/s]
+                   all        229       1202      0.758      0.732      0.795      0.403
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      11/25      4.36G      1.576      1.093      1.489         27        800: 100% 86/86 [00:46<00:00,  1.86it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:03<00:00,  2.13it/s]
+                   all        229       1202      0.774      0.708      0.778      0.398
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      12/25      5.23G       1.56      1.051      1.469         20        800: 100% 86/86 [00:46<00:00,  1.83it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:04<00:00,  1.62it/s]
+                   all        229       1202      0.753      0.739      0.802      0.399
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      13/25      4.05G      1.556      1.004       1.47         87        800: 100% 86/86 [00:44<00:00,  1.93it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:05<00:00,  1.51it/s]
+                   all        229       1202      0.693      0.773      0.788      0.391
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      14/25      4.44G       1.55      0.987      1.451         32        800: 100% 86/86 [00:44<00:00,  1.92it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:03<00:00,  2.14it/s]
+                   all        229       1202      0.776      0.764      0.822      0.416
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      15/25      4.16G       1.51      0.989      1.439         76        800: 100% 86/86 [00:46<00:00,  1.86it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:03<00:00,  2.28it/s]
+                   all        229       1202      0.757      0.755      0.808      0.414
+Closing dataloader mosaic
+albumentations: Blur(p=0.01, blur_limit=(3, 7)), MedianBlur(p=0.01, blur_limit=(3, 7)), ToGray(p=0.01), CLAHE(p=0.01, clip_limit=(1, 4.0), tile_grid_size=(8, 8))
+/usr/lib/python3.10/multiprocessing/popen_fork.py:66: RuntimeWarning: os.fork() was called. Os.fork() is incompatible with multithreaded code, and JAX is multithreaded, so this will likely lead to a deadlock.
+  Self.pid = os.fork()
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      16/25      4.41G       1.56     0.9725      1.517          7        800: 100% 86/86 [00:46<00:00,  1.86it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:06<00:00,  1.30it/s]
+                   all        229       1202      0.755      0.755      0.813      0.409
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      17/25      4.56G      1.559     0.9539      1.498         29        800: 100% 86/86 [00:41<00:00,  2.07it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:03<00:00,  2.31it/s]
+                   all        229       1202      0.778      0.775      0.828       0.43
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      18/25      4.52G      1.536     0.9275      1.475         33        800: 100% 86/86 [00:42<00:00,  2.02it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:06<00:00,  1.22it/s]
+                   all        229       1202      0.774      0.769      0.829      0.423
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      19/25      5.03G      1.514     0.8838      1.464         23        800: 100% 86/86 [00:42<00:00,  2.04it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:03<00:00,  2.39it/s]
+                   all        229       1202      0.787      0.754      0.831      0.428
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      20/25      4.03G      1.499     0.8707      1.472         20        800: 100% 86/86 [00:40<00:00,  2.12it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:05<00:00,  1.37it/s]
+                   all        229       1202      0.741       0.78      0.819       0.44
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      21/25      4.79G      1.476     0.8795      1.463          9        800: 100% 86/86 [00:41<00:00,  2.07it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:03<00:00,  2.32it/s]
+                   all        229       1202      0.742      0.756      0.815      0.432
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      22/25      4.05G      1.479     0.8284      1.439         52        800: 100% 86/86 [00:40<00:00,  2.10it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:05<00:00,  1.37it/s]
+                   all        229       1202      0.781      0.774       0.83      0.429
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      23/25      4.46G      1.448     0.8441      1.426         13        800: 100% 86/86 [00:42<00:00,  2.03it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:03<00:00,  2.22it/s]
+                   all        229       1202      0.788      0.771      0.826      0.439
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      24/25      4.56G      1.439     0.7978      1.409         26        800: 100% 86/86 [00:41<00:00,  2.07it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:05<00:00,  1.43it/s]
+                   all        229       1202      0.794      0.788      0.852      0.442
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      25/25      4.81G       1.42     0.7835      1.401         32        800: 100% 86/86 [00:41<00:00,  2.08it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:03<00:00,  2.47it/s]
+                   all        229       1202      0.783      0.779      0.846      0.451
+
+25 epochs completed in 0.352 hours.
+Optimizer stripped from runs/detect/train/weights/last.pt, 6.3MB
+Optimizer stripped from runs/detect/train/weights/best.pt, 6.3MB
+
+Validating runs/detect/train/weights/best.pt…
+Ultralytics YOLOv8.0.196 🚀 Python-3.10.12 torch-2.3.0+cu121 CUDA:0 (Tesla T4, 15102MiB)
+Model summary (fused): 168 layers, 3005843 parameters, 0 gradients, 8.1 GFLOPs
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 8/8 [00:11<00:00,  1.41s/it]
+                   all        229       1202      0.784      0.779      0.845      0.451
+Speed: 0.7ms preprocess, 4.8ms inference, 0.0ms loss, 6.5ms postprocess per image
+Results saved to runs/detect/train
+
+
+Шаг 3:
+Программа:
+!ls {HOME}/runs/detect/train/
+
+Вывод программы:
+args.yaml					    R_curve.png	 v al_batch0_labels.jpg
+confusion_matrix_normalized.png			    results.csv		 val_batch0_pred.jpg
+confusion_matrix.png				    results.png	 v al_batch1_labels.jpg
+events.out.tfevents.1720473018.c238ac84d727.2510.0  train_batch0.jpg	 val_batch1_pred.jpg
+F1_curve.png					    train_batch1290.jpg  val_batch2_labels.jpg
+labels_correlogram.jpg				    train_batch1291.jpg  val_batch2_pred.jpg
+labels.jpg					    train_batch1292.jpg  weights
+P_curve.png					    train_batch1.jpg
+PR_curve.png					    train_batch2.jpg
+
+
+
+Шаг 4:
+Программа:
+%cd {HOME}
+Image(filename=f’{HOME}/runs/detect/train/confusion_matrix.png’, width=600)
+
+Вывод программы: смотреть confusion_matrix.png
+ 
+
+
+Шаг 5:
+Программа:
+%cd {HOME}
+Image(filename=f’{HOME}/runs/detect/train/results.png’, width=600)
+
+Вывод программы: смотреть results.png
+ 
+
+
+Шаг 6:
+Программа:
+%cd {HOME}
+Image(filename=f’{HOME}/runs/detect/train/val_batch0_pred.jpg’, width=600)
+
+Вывод программы: смотреть val_batch0_pred.jpg
+ 
+
+
+Шаг 7: Проверка пользовательской модели (веса).
+Программа:
+%cd {HOME}
+
+!yolo task=detect mode=val model={HOME}/runs/detect/train/weights/best.pt data={dataset.location}/data.yaml
+
+Вывод программы:
+/content
+Ultralytics YOLOv8.0.196 🚀 Python-3.10.12 torch-2.3.0+cu121 CUDA:0 (Tesla T4, 15102MiB)
+Model summary (fused): 168 layers, 3005843 parameters, 0 gradients, 8.1 GFLOPs
+val: Scanning /content/datasets/sunflower-3-1/valid/labels.cache… 229 images, 14 backgrounds, 0 corrupt: 100% 229/229 [00:00<?, ?it/s]
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% 15/15 [00:11<00:00,  1.36it/s]
+                   all        229       1202      0.783      0.779      0.846      0.451
+Speed: 6.5ms preprocess, 7.4ms inference, 0.0ms loss, 6.3ms postprocess per image
+Results saved to runs/detect/val
+
+
+
+Шаг 8: Вывод с помощью пользовательской модели (веса).
+Программа:
+%cd {HOME}
+!yolo task=detect mode=predict model={HOME}/runs/detect/train/weights/best.pt conf=0.25 source={dataset.location}/test/images save=True
+
+Вывод программы:
+/content
+Ultralytics YOLOv8.0.196 🚀 Python-3.10.12 torch-2.3.0+cu121 CUDA:0 (Tesla T4, 15102MiB)
+Model summary (fused): 168 layers, 3005843 parameters, 0 gradients, 8.1 GFLOPs
+
+image 1/120 /content/datasets/sunflower-3-1/test/images/10386702973_e74a34c806_n_jpg.rf.b98f7e532c6abf26cd5e390b84b0be3e.jpg: 800x800 1 sunflower, 10.0ms
+image 2/120 /content/datasets/sunflower-3-1/test/images/1240625276_fb3bd0c7b1_jpg.rf.aa27270a655d1dae7fe54227630676bd.jpg: 800x800 1 sunflower, 10.0ms
+image 3/120 /content/datasets/sunflower-3-1/test/images/127192624_afa3d9cb84_jpg.rf.47ce5e75539d4dfec1a7a389576babef.jpg: 800x800 10 sunflowers, 9.9ms
+image 4/120 /content/datasets/sunflower-3-1/test/images/13096076565_72c2c60875_n_jpg.rf.ecadb44b0f4aef61c3c0425af24c175f.jpg: 800x800 1 sunflower, 9.9ms
+image 5/120 /content/datasets/sunflower-3-1/test/images/1314584013_fe935fdeb1_n_jpg.rf.62361286d93626e21794131797451180.jpg: 800x800 2 sunflowers, 9.9ms
+image 6/120 /content/datasets/sunflower-3-1/test/images/14121915990_4b76718077_m_jpg.rf.3c0a8209ceef5e1c07792ace6c21f81f.jpg: 800x800 5 sunflowers, 9.9ms
+image 7/120 /content/datasets/sunflower-3-1/test/images/14244410747_22691ece4a_n_jpg.rf.fe4775ec15b85e1d1ef14996f72223e9.jpg: 800x800 11 sunflowers, 9.9ms
+image 8/120 /content/datasets/sunflower-3-1/test/images/14858674096_ed0fc1a130_jpg.rf.a324a8ae63af2a43e2ad29db3ef36f76.jpg: 800x800 42 sunflowers, 9.9ms
+image 9/120 /content/datasets/sunflower-3-1/test/images/14889392928_9742aed45b_m_jpg.rf.cea8bc5fdb29c7f98b3ece2adb3c94ca.jpg: 800x800 6 sunflowers, 9.9ms
+image 10/120 /content/datasets/sunflower-3-1/test/images/15026703621_e15e9d55f0_n_jpg.rf.4a00183ed6297c3f1805c867455e8356.jpg: 800x800 19 sunflowers, 9.9ms
+image 11/120 /content/datasets/sunflower-3-1/test/images/15054752730_fcf54d475e_m_jpg.rf.3a2208a773073361b5e052d4046e46c6.jpg: 800x800 9 sunflowers, 9.9ms
+image 12/120 /content/datasets/sunflower-3-1/test/images/15054864508_0334b892be_m_jpg.rf.8d79495dad4eb50964185d727cf137bb.jpg: 800x800 1 sunflower, 9.9ms
+image 13/120 /content/datasets/sunflower-3-1/test/images/15054865768_2cc87ac9d4_m_jpg.rf.d6ab61890f166420ad186091ecf0983c.jpg: 800x800 1 sunflower, 9.9ms
+image 14/120 /content/datasets/sunflower-3-1/test/images/15108515192_f686dce398_n_jpg.rf.2bcbf1d61011b2b9487f46453d64efc9.jpg: 800x800 3 sunflowers, 9.9ms
+image 15/120 /content/datasets/sunflower-3-1/test/images/15241431045_65201cf15a_n_jpg.rf.0efb0803d3e771056a7ab62c56b78e79.jpg: 800x800 1 sunflower, 9.9ms
+image 16/120 /content/datasets/sunflower-3-1/test/images/15380755137_a2e67839ab_m_jpg.rf.8df38064c98af8f6ce976f4de0141495.jpg: 800x800 2 sunflowers, 9.9ms
+image 17/120 /content/datasets/sunflower-3-1/test/images/164670455_29d8e02bbd_n_jpg.rf.8099c68856e85d1c84955649fee1917c.jpg: 800x800 1 sunflower, 9.9ms
+image 18/120 /content/datasets/sunflower-3-1/test/images/16616096711_12375a0260_n_jpg.rf.2f52e959bc421d4ed3d3120a8f37ef69.jpg: 800x800 7 sunflowers, 9.9ms
+image 19/120 /content/datasets/sunflower-3-1/test/images/1880606744_23e3dc4f6b_n_jpg.rf.5dca2dffb365166e8beb686c2b9ef0e7.jpg: 800x800 3 sunflowers, 9.9ms
+image 20/120 /content/datasets/sunflower-3-1/test/images/18828283553_e46504ae38_jpg.rf.13eba22f830b261ceceebc9c64225290.jpg: 800x800 3 sunflowers, 9.9ms
+image 21/120 /content/datasets/sunflower-3-1/test/images/19595718862_c68896370c_m_jpg.rf.50a0c526c4688b79b0cf1d9caccaf001.jpg: 800x800 1 sunflower, 9.9ms
+image 22/120 /content/datasets/sunflower-3-1/test/images/1_img012_png.rf.b06d9df654261f53988449243f32e57f.jpg: 800x800 39 sunflowers, 9.9ms
+image 23/120 /content/datasets/sunflower-3-1/test/images/1_img015_png.rf.bcd3da03af15b4bcfede23203e52da60.jpg: 800x800 38 sunflowers, 9.9ms
+image 24/120 /content/datasets/sunflower-3-1/test/images/1_img017_png.rf.f0a46c69be575c492d9965e73eaa0c9e.jpg: 800x800 40 sunflowers, 9.9ms
+image 25/120 /content/datasets/sunflower-3-1/test/images/1_img020_png.rf.7dcf63f5f21bf0c6a045da94d26807cb.jpg: 800x800 3 sunflowers, 9.9ms
+image 26/120 /content/datasets/sunflower-3-1/test/images/1_img059_png.rf.6bfebbb9e8a370ed7b52e4274269f8f0.jpg: 800x800 7 sunflowers, 9.9ms
+image 27/120 /content/datasets/sunflower-3-1/test/images/1_img060_png.rf.07af3906c4f178be6fee0ff7f45ba0c8.jpg: 800x800 8 sunflowers, 9.9ms
+image 28/120 /content/datasets/sunflower-3-1/test/images/1_img061_png.rf.a5896fc1f9d6f67d50f5302a1ec2411f.jpg: 800x800 8 sunflowers, 9.9ms
+image 29/120 /content/datasets/sunflower-3-1/test/images/1_img062_png.rf.1e332334272f73d0450189f7ed593891.jpg: 800x800 9 sunflowers, 9.9ms
+image 30/120 /content/datasets/sunflower-3-1/test/images/1_img065_png.rf.10831b3b655b873fc5758da22f09abbf.jpg: 800x800 8 sunflowers, 9.9ms
+image 31/120 /content/datasets/sunflower-3-1/test/images/1_img068_png.rf.625f393a3af0d548a6149b4f48161878.jpg: 800x800 3 sunflowers, 9.9ms
+image 32/120 /content/datasets/sunflower-3-1/test/images/1_img074_png.rf.71315d217be84e08eec20f0c6e4ab28d.jpg: 800x800 3 sunflowers, 9.9ms
+image 33/120 /content/datasets/sunflower-3-1/test/images/1_img077_png.rf.3fef6719ea787900404afaab9ac8d4fa.jpg: 800x800 2 sunflowers, 9.9ms
+image 34/120 /content/datasets/sunflower-3-1/test/images/1_img078_png.rf.51682ab96dce3514b48d2b0005651b0a.jpg: 800x800 2 sunflowers, 9.9ms
+image 35/120 /content/datasets/sunflower-3-1/test/images/1_img084_png.rf.b32efca4e95bba9a47f641cef053a041.jpg: 800x800 5 sunflowers, 9.9ms
+image 36/120 /content/datasets/sunflower-3-1/test/images/1_img087_png.rf.96bfa8f1d46bb28310ea2457459b4eb2.jpg: 800x800 5 sunflowers, 9.9ms
+image 37/120 /content/datasets/sunflower-3-1/test/images/1_img101_png.rf.512ffdf667e1d0e02c164258f62cf89a.jpg: 800x800 68 sunflowers, 9.9ms
+image 38/120 /content/datasets/sunflower-3-1/test/images/1_img107_png.rf.a0761ada5435e746d99d687cc9d4ef9e.jpg: 800x800 22 sunflowers, 9.9ms
+image 39/120 /content/datasets/sunflower-3-1/test/images/1_img113_png.rf.df82615897d683a8e968d056eb0ba274.jpg: 800x800 71 sunflowers, 9.9ms
+image 40/120 /content/datasets/sunflower-3-1/test/images/1_img122_png.rf.c3006fc261223c90bda6375b3cc57f89.jpg: 800x800 26 sunflowers, 9.9ms
+image 41/120 /content/datasets/sunflower-3-1/test/images/1_img129_png.rf.6d327a466dba06c69234c92a680450f0.jpg: 800x800 3 sunflowers, 9.9ms
+image 42/120 /content/datasets/sunflower-3-1/test/images/1_img130_png.rf.179472eef01dcffb44968ec1f5f6364b.jpg: 800x800 3 sunflowers, 9.9ms
+image 43/120 /content/datasets/sunflower-3-1/test/images/1_img133_png.rf.31430272da62787d38ef1e0a9fd8d0c1.jpg: 800x800 3 sunflowers, 9.9ms
+image 44/120 /content/datasets/sunflower-3-1/test/images/1_img137_png.rf.6ffa857f627ba633febdaf4d35495a26.jpg: 800x800 3 sunflowers, 10.0ms
+image 45/120 /content/datasets/sunflower-3-1/test/images/1_img145_png.rf.bd674e55c6486f69be6bd9b7c9d87060.jpg: 800x800 5 sunflowers, 10.1ms
+image 46/120 /content/datasets/sunflower-3-1/test/images/1_img149_png.rf.704a46ee568fc32f23d4c9a697cdabcd.jpg: 800x800 3 sunflowers, 9.9ms
+image 47/120 /content/datasets/sunflower-3-1/test/images/1_img158_png.rf.a5b69b19e4a149fa2800b25d27930865.jpg: 800x800 53 sunflowers, 9.9ms
+image 48/120 /content/datasets/sunflower-3-1/test/images/1_img161_png.rf.95d396b1f8596ed88f7f0fcc838f01ef.jpg: 800x800 61 sunflowers, 9.9ms
+image 49/120 /content/datasets/sunflower-3-1/test/images/1_img165_png.rf.99c1071aed5e3b5174e86a09ed2bb3ed.jpg: 800x800 63 sunflowers, 9.9ms
+image 50/120 /content/datasets/sunflower-3-1/test/images/1_img167_png.rf.811f1e5cf9cbd28c19ef398ec95e5695.jpg: 800x800 66 sunflowers, 9.9ms
+image 51/120 /content/datasets/sunflower-3-1/test/images/1_img177_png.rf.2063b1a23fbcb7be6a86448c10ee85d4.jpg: 800x800 8 sunflowers, 9.9ms
+image 52/120 /content/datasets/sunflower-3-1/test/images/1_img178_png.rf.1fb43c88fd6c9adf3833a7f4d7cd00c7.jpg: 800x800 7 sunflowers, 9.9ms
+image 53/120 /content/datasets/sunflower-3-1/test/images/1_img188_png.rf.c929f6217b49c57af2269afba7237557.jpg: 800x800 1 sunflower, 9.9ms
+image 54/120 /content/datasets/sunflower-3-1/test/images/1_img196_png.rf.4493b338120c77f4721bdf407b592ef2.jpg: 800x800 6 sunflowers, 9.9ms
+image 55/120 /content/datasets/sunflower-3-1/test/images/1_img200_png.rf.2c98f76cfa61dfc0813cffb50d18fc65.jpg: 800x800 5 sunflowers, 9.9ms
+image 56/120 /content/datasets/sunflower-3-1/test/images/1_img203_png.rf.bb45bee4586710f46487ee521cbed6f8.jpg: 800x800 7 sunflowers, 9.9ms
+image 57/120 /content/datasets/sunflower-3-1/test/images/1_img209_png.rf.6cb754f8c188766529e01c0cd238e72c.jpg: 800x800 (no detections), 9.9ms
+image 58/120 /content/datasets/sunflower-3-1/test/images/1_img284_png.rf.6b428d1fef60d6dfe8a7387e752b6bbd.jpg: 800x800 5 sunflowers, 9.9ms
+image 59/120 /content/datasets/sunflower-3-1/test/images/1_img296_png.rf.789eb048e168a7890504dcd4d4260518.jpg: 800x800 1 sunflower, 9.9ms
+image 60/120 /content/datasets/sunflower-3-1/test/images/20078409301_aa8061bd0b_n_jpg.rf.920bd64aabad35df2486c792337b3f5c.jpg: 800x800 1 sunflower, 9.9ms
+image 61/120 /content/datasets/sunflower-3-1/test/images/201809908_0ef84bb351_jpg.rf.151db5b94d03d4f99ffed44e207a9024.jpg: 800x800 44 sunflowers, 9.9ms
+image 62/120 /content/datasets/sunflower-3-1/test/images/22429146402_332fa2fc72_m_jpg.rf.79f3ff87b28965f8f8e26dec8d7ce4d1.jpg: 800x800 2 sunflowers, 9.9ms
+image 63/120 /content/datasets/sunflower-3-1/test/images/23247483352_0defc7a6dc_n_jpg.rf.b2fde6bfbf1edc4be2257bbb12cc853e.jpg: 800x800 1 sunflower, 9.9ms
+image 64/120 /content/datasets/sunflower-3-1/test/images/2328600790_90e2942557_n_jpg.rf.1246c3ec6abe71cc248ad6dee4bea727.jpg: 800x800 3 sunflowers, 9.9ms
+image 65/120 /content/datasets/sunflower-3-1/test/images/23286304156_3635f7de05_jpg.rf.99f546a289926977a63a86caa0e724d6.jpg: 800x800 1 sunflower, 9.9ms
+image 66/120 /content/datasets/sunflower-3-1/test/images/2588234269_c4bfd0d8b9_n_jpg.rf.a35fa59e9f1fd483cff122efc5ea2d8c.jpg: 800x800 1 sunflower, 9.9ms
+image 67/120 /content/datasets/sunflower-3-1/test/images/2729206569_9dd2b5a3ed_jpg.rf.618010034a2975fd782a470611f093d9.jpg: 800x800 12 sunflowers, 9.9ms
+image 68/120 /content/datasets/sunflower-3-1/test/images/2927020075_54c9186797_n_jpg.rf.9bc17c23d5829a64525c2d9e2c325942.jpg: 800x800 1 sunflower, 9.9ms
+image 69/120 /content/datasets/sunflower-3-1/test/images/2996573407_5e473b9359_jpg.rf.1db39a20b0ec01faf9b2e0b6923ff0aa.jpg: 800x800 1 sunflower, 10.4ms
+image 70/120 /content/datasets/sunflower-3-1/test/images/2_img001_png.rf.1d256357ac334a3ad4016c48309330c2.jpg: 800x800 1 sunflower, 10.0ms
+image 71/120 /content/datasets/sunflower-3-1/test/images/2_img003_png.rf.57fea3e9de9b84a56806f15037dd3677.jpg: 800x800 1 sunflower, 9.9ms
+image 72/120 /content/datasets/sunflower-3-1/test/images/2_img004_png.rf.82929d19c394860058e6aba0223ab89a.jpg: 800x800 1 sunflower, 9.9ms
+image 73/120 /content/datasets/sunflower-3-1/test/images/2_img017_png.rf.440ded0f724efa5bbc5028d8ba7a683b.jpg: 800x800 2 sunflowers, 9.9ms
+image 74/120 /content/datasets/sunflower-3-1/test/images/2_img021_png.rf.398261d8cbb68befe7965cee8491a56f.jpg: 800x800 5 sunflowers, 9.9ms
+image 75/120 /content/datasets/sunflower-3-1/test/images/2_img032_png.rf.a67ad922ff38f381d74a996177af06e1.jpg: 800x800 5 sunflowers, 9.9ms
+image 76/120 /content/datasets/sunflower-3-1/test/images/2_img045_png.rf.fd2c0513268511ff45ac86df8581d3f7.jpg: 800x800 5 sunflowers, 9.9ms
+image 77/120 /content/datasets/sunflower-3-1/test/images/2_img056_png.rf.380f7160ee1b0efa22dd88460656d266.jpg: 800x800 1 sunflower, 9.9ms
+image 78/120 /content/datasets/sunflower-3-1/test/images/2_img078_png.rf.3e5e303b01419515e57c49157850bebc.jpg: 800x800 1 sunflower, 9.9ms
+image 79/120 /content/datasets/sunflower-3-1/test/images/2_img079_png.rf.f31ccb0a60f078f905515792a8508888.jpg: 800x800 1 sunflower, 10.5ms
+image 80/120 /content/datasets/sunflower-3-1/test/images/2_img087_png.rf.11ffa71edbe4396fc2182dd0399636b7.jpg: 800x800 1 sunflower, 9.9ms
+image 81/120 /content/datasets/sunflower-3-1/test/images/2_img120_png.rf.de3c1fd39ce2f8a17aa8af00b6f6a27d.jpg: 800x800 12 sunflowers, 9.9ms
+image 82/120 /content/datasets/sunflower-3-1/test/images/310380634_60e6c79989_jpg.rf.70e1b1291940e18a1003cc2a30b229ab.jpg: 800x800 3 sunflowers, 9.9ms
+image 83/120 /content/datasets/sunflower-3-1/test/images/3681233294_4f06cd8903_jpg.rf.ac89ec385f2c34a30b11ad439b3bea88.jpg: 800x800 2 sunflowers, 9.9ms
+image 84/120 /content/datasets/sunflower-3-1/test/images/3766264038_ea701c7131_n_jpg.rf.8224bc9746aac9c0b40d0eed4ed03d28.jpg: 800x800 2 sunflowers, 9.9ms
+image 85/120 /content/datasets/sunflower-3-1/test/images/3832945398_96509d192b_jpg.rf.ed127a1ed56d57af5ea47308b1e0e5d5.jpg: 800x800 1 sunflower, 9.9ms
+image 86/120 /content/datasets/sunflower-3-1/test/images/3848405800_8eea982c40_jpg.rf.0b9ef05a60abce8fae583f17687962a8.jpg: 800x800 27 sunflowers, 9.9ms
+image 87/120 /content/datasets/sunflower-3-1/test/images/4673984698_6ec14d5b79_jpg.rf.4687c5e402e8f4a1ba667191cc3b3315.jpg: 800x800 2 sunflowers, 10.0ms
+image 88/120 /content/datasets/sunflower-3-1/test/images/4746668678_0e2693b1b9_n_jpg.rf.fd7ec88e504664fb756be543e2860831.jpg: 800x800 (no detections), 9.9ms
+image 89/120 /content/datasets/sunflower-3-1/test/images/4804434999_bf2187e96a_n_jpg.rf.af464f44960cc69479551082da1e010d.jpg: 800x800 2 sunflowers, 9.9ms
+image 90/120 /content/datasets/sunflower-3-1/test/images/4813483281_f3707a71e7_n_jpg.rf.5399a8ffa60ffec0d57e2e552285eaab.jpg: 800x800 2 sunflowers, 9.9ms
+image 91/120 /content/datasets/sunflower-3-1/test/images/4818994715_9d90527d18_n_jpg.rf.ce4bf2405ae7eca6dbe8bb200baef445.jpg: 800x800 5 sunflowers, 9.9ms
+image 92/120 /content/datasets/sunflower-3-1/test/images/4877195645_791c3a83b9_m_jpg.rf.58db6007b67a17efc7330585c32540fd.jpg: 800x800 23 sunflowers, 9.9ms
+image 93/120 /content/datasets/sunflower-3-1/test/images/4895720722_8247f2015b_n_jpg.rf.cb1b41a086271b13c140c6699b092792.jpg: 800x800 5 sunflowers, 9.9ms
+image 94/120 /content/datasets/sunflower-3-1/test/images/4932735566_2327bf319a_jpg.rf.53b459303265265651e66d6c5cd75cba.jpg: 800x800 1 sunflower, 9.9ms
+image 95/120 /content/datasets/sunflower-3-1/test/images/4933822052_2dfef02517_jpg.rf.c5593c3f58a9b25c89763d1e3cd7c4c2.jpg: 800x800 37 sunflowers, 9.9ms
+image 96/120 /content/datasets/sunflower-3-1/test/images/4933823194_33f6e32c5a_jpg.rf.733f41f6485ebae27d4f99b3e2f60cca.jpg: 800x800 1 sunflower, 9.9ms
+image 97/120 /content/datasets/sunflower-3-1/test/images/4933823922_911ac40b0d_jpg.rf.16cab2d0f2395b829f3513dadd64237f.jpg: 800x800 4 sunflowers, 9.9ms
+image 98/120 /content/datasets/sunflower-3-1/test/images/4933824012_8cbfe606f6_jpg.rf.773a2f20092aa49203b16498c81f591b.jpg: 800x800 4 sunflowers, 9.9ms
+image 99/120 /content/datasets/sunflower-3-1/test/images/5076821914_c21b58fd4c_m_jpg.rf.4d7b5694770324fda04de622db0b372f.jpg: 800x800 3 sunflowers, 9.9ms
+image 100/120 /content/datasets/sunflower-3-1/test/images/5139969631_743880e01d_n_jpg.rf.76a85a381a4be7c0baae73af2383b5cb.jpg: 800x800 1 sunflower, 9.9ms
+image 101/120 /content/datasets/sunflower-3-1/test/images/5923085671_f81dd1cf6f_jpg.rf.8e8cb22eb5fe9a30c2b51d2e59656d52.jpg: 800x800 3 sunflowers, 10.7ms
+image 102/120 /content/datasets/sunflower-3-1/test/images/5951665793_8ae4807cbd_n_jpg.rf.39c04b198660ace1e646605e66569505.jpg: 800x800 1 sunflower, 9.9ms
+image 103/120 /content/datasets/sunflower-3-1/test/images/5967283168_90dd4daf28_n_jpg.rf.00d6c5860148b86ad11bbe579341854b.jpg: 800x800 2 sunflowers, 9.9ms
+image 104/120 /content/datasets/sunflower-3-1/test/images/5967284308_85714d8cf7_m_jpg.rf.232093b0ed866b9a69b1528e12342168.jpg: 800x800 (no detections), 9.9ms
+image 105/120 /content/datasets/sunflower-3-1/test/images/5970301989_fe3a68aac8_m_jpg.rf.288a94877fc59c6eaaf4edc65d5e1e3c.jpg: 800x800 1 sunflower, 9.9ms
+image 106/120 /content/datasets/sunflower-3-1/test/images/5970868068_fe1c8b282e_n_jpg.rf.c42f1adf61073e9f609e8694ca13e64b.jpg: 800x800 1 sunflower, 9.9ms
+image 107/120 /content/datasets/sunflower-3-1/test/images/5999024446_5721493894_jpg.rf.b712ec1d37bb9d8699c8814028136c51.jpg: 800x800 12 sunflowers, 9.9ms
+image 108/120 /content/datasets/sunflower-3-1/test/images/6199086734_b7ddc65816_m_jpg.rf.0b15dab526c6d4d93a5aa87ecf3b10a2.jpg: 800x800 3 sunflowers, 9.9ms
+image 109/120 /content/datasets/sunflower-3-1/test/images/6495554833_86eb8faa8e_n_jpg.rf.2e501e72f9b4ea52343a60d05fe9d184.jpg: 800x800 3 sunflowers, 9.9ms
+image 110/120 /content/datasets/sunflower-3-1/test/images/6606741847_f0198d83ff_jpg.rf.4b0e2f2e5a7291fca337bb18cb1b2593.jpg: 800x800 11 sunflowers, 9.9ms
+image 111/120 /content/datasets/sunflower-3-1/test/images/6606817351_10f6e43a09_jpg.rf.3b7ebad47f1a8857983d32eaad9ef6ae.jpg: 800x800 1 sunflower, 9.9ms
+image 112/120 /content/datasets/sunflower-3-1/test/images/7176729016_d73ff2211e_jpg.rf.fbae5e4dd51e9a163b07299e72582520.jpg: 800x800 1 sunflower, 9.9ms
+image 113/120 /content/datasets/sunflower-3-1/test/images/7581713708_8eae6794f2_jpg.rf.f4237fd87e6c90c77c1b5a7addd07af6.jpg: 800x800 13 sunflowers, 10.8ms
+image 114/120 /content/datasets/sunflower-3-1/test/images/7586498522_4dcab1c8d2_m_jpg.rf.6e24c245a90752499964f5b44c09035c.jpg: 800x800 7 sunflowers, 9.9ms
+image 115/120 /content/datasets/sunflower-3-1/test/images/7935826214_9b57628203_m_jpg.rf.ee14f2457adb99d837c45f626bbb9aba.jpg: 800x800 5 sunflowers, 9.9ms
+image 116/120 /content/datasets/sunflower-3-1/test/images/8071460469_a7c2c34b97_n_jpg.rf.4203c5a82880ea28e3ba9afddff4151b.jpg: 800x800 2 sunflowers, 9.9ms
+image 117/120 /content/datasets/sunflower-3-1/test/images/8292914969_4a76608250_m_jpg.rf.0811da8652507add64af78172d6cb3af.jpg: 800x800 5 sunflowers, 9.9ms
+image 118/120 /content/datasets/sunflower-3-1/test/images/9056495873_66e351b17c_n_jpg.rf.16526b9c160594d6a2baabf55129966e.jpg: 800x800 4 sunflowers, 9.9ms
+image 119/120 /content/datasets/sunflower-3-1/test/images/9491955955_d0b2c83834_jpg.rf.915eb9114aa5617c871696b869934c6c.jpg: 800x800 1 sunflower, 10.0ms
+image 120/120 /content/datasets/sunflower-3-1/test/images/9904127656_f76a5a4811_m_jpg.rf.7e915b188c4661a64db6795a0bdcdabb.jpg: 800x800 10 sunflowers, 9.9ms
+Speed: 3.3ms preprocess, 9.9ms inference, 5.8ms postprocess per image at shape (1, 3, 800, 800)
+Results saved to runs/detect/predict
+
+
+Шаг 9: Результаты.
+Программа:
+import glob
+from Ipython.display import Image, display
+
+for image_path in glob.glob(f’{HOME}/runs/detect/predict/*.jpg’)[:3]:
+      display(Image(filename=image_path, width=400))
+      print(«\n»)
+      
+Вывод программы: смотреть 1.jpeg, 2.jpeg, 3.jpeg
+    
