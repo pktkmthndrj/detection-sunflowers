@@ -326,7 +326,7 @@ Programm:
 Image(filename=f'{HOME}/runs/detect/train/results.png', width=600)
 
 Programm output:
-(watch file reult.png)
+(watch file result.png)
 
 
 
