@@ -336,7 +336,7 @@ Programm:
 Image(filename=f'{HOME}/runs/detect/train/val_batch0_pred.jpg', width=600)
 
 Programm output:
-(watch image val_batch0_pred.jpg)
+(watch image val_batch0_pred.jpeg)
 
 
 
@@ -505,4 +505,4 @@ for image_path in glob.glob(f'{HOME}/runs/detect/predict/*.jpg')[:3]:
       print("\n")
       
 Programm output:
-(watch files 1.png, 2.png, 3.png)
+(watch files 1.jpeg, 2.jpeg, 3.jpeg)
